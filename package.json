@@ -1,6 +1,6 @@
 {
   "name": "@xialvjun/js-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "my piece of code used in my projects but is not enough to be a standalone package.",
   "main": "lib/index.js",
   "scripts": {
