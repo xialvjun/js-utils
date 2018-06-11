@@ -1,22 +1,42 @@
 {
   "name": "@xialvjun/js-utils",
-  "version": "0.0.3",
-  "description": "my piece of code used in my projects but is not enough to be a standalone package.",
-  "main": "lib/index.js",
-  "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/xialvjun/js-utils.git"
-  },
+  "version": "0.3.1",
+  "description": "My piece of code used in my projects but is not enough to be a standalone package.",
+  "repository": "github:xialvjun/js-utils",
   "keywords": [
     "utils"
   ],
+  "----------------": "----------------",
+  "peerDependencies": {},
+  "devDependencies": {
+    "rimraf": "^2.6.2",
+    "typescript": "^2.9.1"
+  },
+  "dependencies": {},
+  "================": "================",
   "author": "xialvjun@live.com",
   "license": "MIT",
-  "devDependencies": {
-    "typescript": "^2.8.1"
+  "++++++++++++++++": "++++++++++++++++",
+  "files": [
+    "src/",
+    "es/",
+    "lib/",
+    "dist/",
+    "types/"
+  ],
+  "-esnext": "esnext_source_code_not_ts",
+  "module": "es/index.js",
+  "main": "lib/index.js",
+  "-unpkg": "dist/index.js",
+  "-jsdelivr": "dist/index.js",
+  "types": "types/index.d.ts",
+  "################": "################",
+  "scripts": {
+    "build": "npm run build:es && npm run build:lib && npm run build:dist && npm run build:types",
+    "build:es": "rimraf -r es && tsc --outDir es --module es6",
+    "build:lib": "rimraf -r lib && tsc --outDir lib --module commonjs",
+    "build:dist": "rimraf -r dist && echo not_implemented",
+    "build:types": "rimraf -r types && tsc --outDir types --declaration --emitDeclarationOnly",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
