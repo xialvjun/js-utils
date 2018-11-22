@@ -1,6 +1,6 @@
 {
   "name": "@xialvjun/js-utils",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "My piece of code used in my projects but is not enough to be a standalone package.",
   "repository": "github:xialvjun/js-utils",
   "keywords": [
@@ -10,7 +10,7 @@
   "peerDependencies": {},
   "devDependencies": {
     "rimraf": "^2.6.2",
-    "typescript": "^2.9.1"
+    "typescript": "^3.1.6"
   },
   "dependencies": {},
   "================": "================",

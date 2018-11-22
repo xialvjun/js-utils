@@ -3,21 +3,24 @@
 
 // ! 还应有一种只要两次请求是连在一起的，则保证返回同一个 promise 。。。这两种应该区分开。。。
 // ! 也就是说第一种只缓存正确的 promise，第二种则仅仅是缓存 promise 无论对错
-export function cache_pending_promise<T extends (...args: any[]) => Promise<any>>(fn: T) {
+
+type PromiseFunction = (...args: any[]) => Promise<any>;
+
+export function cache_pending_promise<T extends PromiseFunction>(fn: T) {
   let p = null;
-  return <(...args: any[]) => ReturnType<T>>function () {
-    const args = arguments;
+  return <T>function(...args) {
     if (!!p) {
       return p;
     }
-    p = fn.apply(this, args)
+    p = fn(...args)
       .then(r => {
         p = null;
         return r;
-      }).catch(e => {
+      })
+      .catch(e => {
         p = null;
         throw e;
       });
     return p;
-  }
+  };
 }
