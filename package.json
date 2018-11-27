@@ -1,6 +1,6 @@
 {
   "name": "@xialvjun/js-utils",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "My piece of code used in my projects but is not enough to be a standalone package.",
   "repository": "github:xialvjun/js-utils",
   "keywords": [

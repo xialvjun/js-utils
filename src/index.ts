@@ -9,3 +9,4 @@ export * from "./parallel_limit";
 export * from "./set_path";
 export * from "./throttle";
 export * from "./to_string";
+export * from "./try_times";
