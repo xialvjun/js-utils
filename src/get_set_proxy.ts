@@ -1,3 +1,5 @@
+import { to_string } from './to_string';
+
 const symbol = Symbol('$$__get_set_proxy__$$');
 // type proxy<T> = (T extends (infer R)[] ? (proxy<R>)[] : ({ [P in keyof T]: proxy<T[P]> })) & { [symbol]: T }
 type proxy<T> = { [symbol]: T } & { [P in keyof T]: proxy<T[P]> };
@@ -40,7 +42,7 @@ export function proxy<T>(base: T, onChange?: (n: T, o: T) => any) {
         }
         try {
           const v = base[p];
-          if (Object.prototype.toString.call(v) === '[object Array]') {
+          if (to_string(v) === '[object Array]') {
             const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any));
             const rs = ((v as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n)));
             (rs as any)[symbol] = v;
@@ -53,7 +55,7 @@ export function proxy<T>(base: T, onChange?: (n: T, o: T) => any) {
       },
       set(t, p: keyof T, v: T[typeof p], r) {
         const o = base;
-        if (Object.prototype.toString.call(base) === '[object Array]') {
+        if (to_string(base) === '[object Array]') {
           base = (base as any).slice();
           base[p] = v;
         } else {

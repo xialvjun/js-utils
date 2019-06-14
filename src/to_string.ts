@@ -1,1 +1,3 @@
-export const to_string = obj => Object.prototype.toString.apply(obj);
+export function to_string(obj: any): string {
+  return Object.prototype.toString.call(obj);
+}
