@@ -5,6 +5,7 @@ export * from "./channel";
 export * from "./debounce";
 export * from "./deep_flatten";
 export * from "./get_path";
+export * from "./get_set_proxy";
 export * from "./parallel_limit";
 export * from "./set_path";
 export * from "./throttle";
