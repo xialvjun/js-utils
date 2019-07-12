@@ -7,6 +7,7 @@ type proxy<T> = { [symbol]: T } & { [P in keyof T]: proxy<T[P]> };
 // ! 这里 proxy+symbol 可以用于 全局状态管理和局部状态管理. 这里的方便的地方是 get 不会报错, 类似 lodash.get 方法...
 // 不过, 真正严格的程序, 还是应该能保证数据有正确的初始值, 但这扔不妨碍 proxy 很方便, 至少它可以不用太多的检测 api 结果
 // 从而 proxy(res).data.list.map(item => <div/>), 不必 res && res.data && res.data.list
+// alternative: https://github.com/dobjs/dob
 
 /**
  * 用法:
@@ -32,25 +33,25 @@ type proxy<T> = { [symbol]: T } & { [P in keyof T]: proxy<T[P]> };
  * ```
  * if want addEventListener, write `listeners = fn[]` outside
  */
-export function proxy<T>(base: T, onChange?: (n: T, o: T) => any) {
+export function proxy<T, S extends string>(base: T, onChange?: (n: T, o: T) => any, str_symbol?: S) {
   const proxy_instance = new Proxy(
     {},
     {
       get(t, p: (keyof T) | (typeof symbol), r) {
-        if (p == symbol) {
+        if (p == symbol || (p as any) == str_symbol) {
           return base;
         }
         try {
           const v = base[p];
           if (to_string(v) === '[object Array]') {
-            const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any));
-            const rs = ((v as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n)));
+            const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
+            const rs = ((v as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n), str_symbol));
             (rs as any)[symbol] = v;
             return rs;
           }
-          return proxy(v, (n, o) => (proxy_instance[p] = n as any));
+          return proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
         } catch (error) {
-          return proxy(undefined, (n, o) => (proxy_instance[p] = n as any));
+          return proxy(undefined, (n, o) => (proxy_instance[p] = n as any), str_symbol);
         }
       },
       set(t, p: keyof T, v: T[typeof p], r) {
