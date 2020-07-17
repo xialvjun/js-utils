@@ -1,6 +1,6 @@
 {
   "name": "@xialvjun/js-utils",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "my piece of code used in my projects but is not enough to be a standalone package",
   "main": "index.js",
   "peerDependencies": {

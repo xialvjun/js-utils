@@ -2,9 +2,9 @@
 // 从而可以轻松构建全局可能会失败多次，但只会执行成功一次，的全局唯一懒执行任务
 // 这个函数在理解时要注意不同的参数会返回不同的函数。。。也就是说需要预定义参数。。。memonize 不需要预定义参数
 
-type PromiseFunction = (...args: any[]) => Promise<any>;
+import { PromiseFn } from "./parallel_limit";
 
-export function cache_resolved_promise<T extends PromiseFunction>(fn: T) {
+export function cache_resolved_promise<T extends PromiseFn>(fn: T) {
   return (...args: Parameters<T>) => {
     let p: any = null;
     return (refresh?: boolean): ReturnType<T> =>

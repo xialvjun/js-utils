@@ -1,8 +1,6 @@
-import { parallel_limit } from "./parallel_limit";
+import { parallel_limit, PromiseFn } from "./parallel_limit";
 
-type PromiseFunction = (...args: any[]) => Promise<any>;
-
-export function args_parallel_limit<T extends PromiseFunction>(
+export function args_parallel_limit<T extends PromiseFn>(
   fn: T,
   count = 1
 ) {
