@@ -68,3 +68,4 @@ typings/
 .vscode/
 es/
 types/
+lib/

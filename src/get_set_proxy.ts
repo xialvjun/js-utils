@@ -2,7 +2,7 @@ import { to_string } from './to_string';
 
 const symbol = Symbol('$$__get_set_proxy__$$');
 // type proxy<T> = (T extends (infer R)[] ? (proxy<R>)[] : ({ [P in keyof T]: proxy<T[P]> })) & { [symbol]: T }
-type proxy<T> = { [symbol]: T } & { [P in keyof T]: proxy<T[P]> };
+type proxy<T, S extends string> = { [symbol]: T} & { [K in S]: T } & { [P in keyof T]: proxy<T[P], S> };
 
 // ! 这里 proxy+symbol 可以用于 全局状态管理和局部状态管理. 这里的方便的地方是 get 不会报错, 类似 lodash.get 方法...
 // 不过, 真正严格的程序, 还是应该能保证数据有正确的初始值, 但这扔不妨碍 proxy 很方便, 至少它可以不用太多的检测 api 结果
@@ -34,22 +34,28 @@ type proxy<T> = { [symbol]: T } & { [P in keyof T]: proxy<T[P]> };
  * if want addEventListener, write `listeners = fn[]` outside
  */
 export function proxy<T, S extends string>(base: T, onChange?: (n: T, o: T) => any, str_symbol?: S) {
+  // if (to_string(base) === '[object Array]') {
+  //   const pv = proxy(base, (n, o) => (proxy_instance[p] = n as any), str_symbol);
+  //   const rs = ((base as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n), str_symbol));
+  //   (rs as any)[symbol] = base;
+  //   return rs;
+  // }
   const proxy_instance = new Proxy(
-    {},
+    base as any,
     {
       get(t, p: (keyof T) | (typeof symbol), r) {
         if (p == symbol || (p as any) == str_symbol) {
           return base;
         }
         try {
-          const v = base[p];
+          let v = base[p];
+          const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
           if (to_string(v) === '[object Array]') {
-            const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
             const rs = ((v as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n), str_symbol));
             (rs as any)[symbol] = v;
             return rs;
           }
-          return proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
+          return pv;
         } catch (error) {
           return proxy(undefined, (n, o) => (proxy_instance[p] = n as any), str_symbol);
         }
@@ -65,8 +71,14 @@ export function proxy<T, S extends string>(base: T, onChange?: (n: T, o: T) => a
         onChange && onChange(base, o);
         return true;
       },
+      apply(t, zis, args) {
+        return t.apply(zis[symbol], args);
+      },
     },
-  ) as proxy<T>;
+  ) as proxy<T, S>;
   return proxy_instance;
 }
 proxy.s = symbol;
+
+let p = proxy({a:{b:123, c:[1,2,3], d:[{e:1},{e:2},{e:3}]}}, (n, o) => console.log('new one is:', n, '\n', 'and old one is:', o));
+console.log(p.a.d.map(it => it));
