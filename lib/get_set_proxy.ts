@@ -79,6 +79,3 @@ export function proxy<T, S extends string>(base: T, onChange?: (n: T, o: T) => a
   return proxy_instance;
 }
 proxy.s = symbol;
-
-let p = proxy({a:{b:123, c:[1,2,3], d:[{e:1},{e:2},{e:3}]}}, (n, o) => console.log('new one is:', n, '\n', 'and old one is:', o));
-console.log(p.a.d.map(it => it));

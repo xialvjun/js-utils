@@ -6,12 +6,12 @@ export function args_parallel_limit<T extends PromiseFunction>(
   fn: T,
   count = 1
 ) {
-  const args_fns = [];
+  const args_fns: any[] = [];
   return <T>function(...args) {
     let args_fn = args_fns.find(
       it =>
         it.args.length === args.length &&
-        it.args.every((arg, i) => (arg = args[i]))
+        it.args.every((arg: any, i: number) => (arg = args[i]))
     );
     if (args_fn) {
       return args_fn.fn(...args);

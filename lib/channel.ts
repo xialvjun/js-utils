@@ -1,6 +1,6 @@
 export class Channel<T> {
   resources: T[] = [];
-  requests = [];
+  requests: any[] = [];
   push(obj: T) {
     const request = this.requests.shift();
     if (request) {

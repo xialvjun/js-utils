@@ -1,5 +1,5 @@
-export function deep_flatten(list) {
-  list = [].concat(list);
+export function deep_flatten(list: any[]) {
+  list = ([] as any[]).concat(list);
   let length = 0;
   while (list.length !== length) {
     length = list.length;

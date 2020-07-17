@@ -2,9 +2,9 @@ type PromiseFunction = (...args: any[]) => Promise<any>;
 
 // 返回一个可以任意执行，但内部并发只有 count 的函数
 export function parallel_limit<T extends PromiseFunction>(fn: T, count = 1) {
-  const ps = [];
+  const ps: any[] = [];
   let working = 0;
-  return <T>function(...args) {
+  return <T>function (...args) {
     return new Promise((resolve, reject) => {
       ps.push({ resolve, reject, args });
       work();

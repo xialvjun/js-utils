@@ -6,9 +6,9 @@ type PromiseFunction = (...args: any[]) => Promise<any>;
 
 export function cache_resolved_promise<T extends PromiseFunction>(fn: T) {
   return (...args: Parameters<T>) => {
-    let p = null;
+    let p: any = null;
     return (refresh?: boolean): ReturnType<T> =>
-      (refresh || !p ? Promise.reject(false) : p).catch(e => {
+      (refresh || !p ? Promise.reject(false) : p).catch(() => {
         p = fn(...args);
         return p;
       });

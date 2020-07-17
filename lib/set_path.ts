@@ -16,11 +16,7 @@ import { get_path } from "./get_path";
  * @param path
  * @param value
  */
-export function set_path<T>(
-  obj: T,
-  path: string | number | (string | number)[],
-  value
-): T {
+export function set_path<T>(obj: T, path: string | number | (string | number)[], value: any): T {
   let paths = <(string | number)[]>path;
   if (typeof path === "number") {
     path = path + "";
@@ -49,11 +45,7 @@ export function set_path<T>(
     }
     return Object.assign({}, obj, { [paths_0]: value });
   }
-  const tail = set_path(
-    get_path(obj, paths.slice(0, -1)),
-    paths.slice(-1),
-    value
-  );
+  const tail = set_path(get_path(obj, paths.slice(0, -1)), paths.slice(-1), value);
   return set_path(obj, paths.slice(0, -1), tail);
 }
 

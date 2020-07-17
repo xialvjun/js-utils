@@ -7,7 +7,7 @@
 type PromiseFunction = (...args: any[]) => Promise<any>;
 
 export function cache_pending_promise<T extends PromiseFunction>(fn: T) {
-  let p = null;
+  let p: any = null;
   return <T>function(...args) {
     if (!!p) {
       return p;

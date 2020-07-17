@@ -4,11 +4,7 @@
  * @param path
  * @param default_value
  */
-export function get_path(
-  obj,
-  path: string | number | (string | number)[],
-  default_value?
-) {
+export function get_path(obj: any, path: string | number | (string | number)[], default_value?: any): any {
   if (obj === undefined) {
     return default_value;
   }

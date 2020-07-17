@@ -16,7 +16,7 @@ const merge2 = (a: any, b: any) => {
     return b;
   }
   // 此时 a,b 都是数组 或者 非空对象
-  let res = is_array(b) ? [] : {};
+  let res: any = is_array(b) ? [] : {};
   Object.keys(a).forEach((k) => (res[k] = a[k]));
   Object.keys(b).forEach((k) => (res[k] = merge2(res[k], b[k])));
   return res;
@@ -32,7 +32,7 @@ const merge2 = (a: any, b: any) => {
  * merge([1,2,3], {a:123}) === {0:1,1:2,2:3,a:123}
  * @param objs
  */
-export function merge(...objs: any[]) {
+export function merge(...objs: any[]): any {
   // return objs.reduce((acc, cv) => merge2(acc, cv), undefined);
   // * better performance
   return objs.reduceRight((acc, cv) => merge2(cv, acc), undefined);
