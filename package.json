@@ -1,8 +1,9 @@
 {
   "name": "@xialvjun/js-utils",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "my piece of code used in my projects but is not enough to be a standalone package",
   "main": "index.js",
+  "module": "./esm/index.js",
   "peerDependencies": {
     "tslib": "^2.0.0"
   },
@@ -15,7 +16,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p . && tsc -p . -m es6 --outDir ./esm/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

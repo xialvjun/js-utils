@@ -1,24 +1,18 @@
-import { to_string } from './to_string';
+import { is_array } from "./to_string";
 
-const is_array = (obj: any) => to_string(obj) === '[object Array]';
-
-const merge2 = (a: any, b: any) => {
+export const merge2 = (a: any, b: any) => {
   if (b === undefined) {
     return a;
   }
   // 如果 b 是 null 或 原始类型, 直接返回 b
   // a 必须是 数组 或者 非空对象, 否则返回 b
-  if (
-    b === null ||
-    typeof b !== 'object' ||
-    !(typeof a === 'object' && a !== null)
-  ) {
+  if (b === null || typeof b !== "object" || !(typeof a === "object" && a !== null)) {
     return b;
   }
   // 此时 a,b 都是数组 或者 非空对象
   let res: any = is_array(b) ? [] : {};
-  Object.keys(a).forEach((k) => (res[k] = a[k]));
-  Object.keys(b).forEach((k) => (res[k] = merge2(res[k], b[k])));
+  Object.keys(a).forEach(k => (res[k] = a[k]));
+  Object.keys(b).forEach(k => (res[k] = merge2(res[k], b[k])));
   return res;
 };
 

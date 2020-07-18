@@ -8,7 +8,7 @@ import { PromiseFn } from "./parallel_limit";
 
 export function cache_pending_promise<T extends PromiseFn>(fn: T) {
   let p: any = null;
-  return <T>function(...args) {
+  return <T>function (...args) {
     if (!!p) {
       return p;
     }

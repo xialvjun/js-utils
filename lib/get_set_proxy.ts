@@ -1,8 +1,8 @@
-import { to_string } from './to_string';
+import { to_string } from "./to_string";
 
-const symbol = Symbol('$$__get_set_proxy__$$');
+const symbol = Symbol("$$__get_set_proxy__$$");
 // type proxy<T> = (T extends (infer R)[] ? (proxy<R>)[] : ({ [P in keyof T]: proxy<T[P]> })) & { [symbol]: T }
-type proxy<T, S extends string> = { [symbol]: T} & { [K in S]: T } & { [P in keyof T]: proxy<T[P], S> };
+type proxy<T, S extends string> = { [symbol]: T } & { [K in S]: T } & { [P in keyof T]: proxy<T[P], S> };
 
 // ! 这里 proxy+symbol 可以用于 全局状态管理和局部状态管理. 这里的方便的地方是 get 不会报错, 类似 lodash.get 方法...
 // 不过, 真正严格的程序, 还是应该能保证数据有正确的初始值, 但这扔不妨碍 proxy 很方便, 至少它可以不用太多的检测 api 结果
@@ -40,42 +40,39 @@ export function proxy<T, S extends string>(base: T, onChange?: (n: T, o: T) => a
   //   (rs as any)[symbol] = base;
   //   return rs;
   // }
-  const proxy_instance = new Proxy(
-    base as any,
-    {
-      get(t, p: (keyof T) | (typeof symbol), r) {
-        if (p == symbol || (p as any) == str_symbol) {
-          return base;
+  const proxy_instance = new Proxy(base as any, {
+    get(t, p: keyof T | typeof symbol, r) {
+      if (p == symbol || (p as any) == str_symbol) {
+        return base;
+      }
+      try {
+        let v = base[p];
+        const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
+        if (to_string(v) === "[object Array]") {
+          const rs = ((v as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n), str_symbol));
+          (rs as any)[symbol] = v;
+          return rs;
         }
-        try {
-          let v = base[p];
-          const pv = proxy(v, (n, o) => (proxy_instance[p] = n as any), str_symbol);
-          if (to_string(v) === '[object Array]') {
-            const rs = ((v as any) as any[]).map((it, idx) => proxy(it, (n, o) => ((pv as any)[idx] = n), str_symbol));
-            (rs as any)[symbol] = v;
-            return rs;
-          }
-          return pv;
-        } catch (error) {
-          return proxy(undefined, (n, o) => (proxy_instance[p] = n as any), str_symbol);
-        }
-      },
-      set(t, p: keyof T, v: T[typeof p], r) {
-        const o = base;
-        if (to_string(base) === '[object Array]') {
-          base = (base as any).slice();
-          base[p] = v;
-        } else {
-          base = { ...base, [p]: v };
-        }
-        onChange && onChange(base, o);
-        return true;
-      },
-      apply(t, zis, args) {
-        return t.apply(zis[symbol], args);
-      },
+        return pv;
+      } catch (error) {
+        return proxy(undefined, (n, o) => (proxy_instance[p] = n as any), str_symbol);
+      }
     },
-  ) as proxy<T, S>;
+    set(t, p: keyof T, v: T[typeof p], r) {
+      const o = base;
+      if (to_string(base) === "[object Array]") {
+        base = (base as any).slice();
+        base[p] = v;
+      } else {
+        base = { ...base, [p]: v };
+      }
+      onChange && onChange(base, o);
+      return true;
+    },
+    apply(t, zis, args) {
+      return t.apply(zis[symbol], args);
+    },
+  }) as proxy<T, S>;
   return proxy_instance;
 }
 proxy.s = symbol;
